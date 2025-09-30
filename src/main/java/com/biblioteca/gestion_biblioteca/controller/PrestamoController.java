@@ -1,8 +1,10 @@
 package com.biblioteca.gestion_biblioteca.controller;
 
 import com.biblioteca.gestion_biblioteca.model.Prestamo;
+import com.biblioteca.gestion_biblioteca.model.Usuario;
 import com.biblioteca.gestion_biblioteca.service.PrestamoService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -21,13 +23,24 @@ public class PrestamoController {
         return prestamoService.listarPrestamos();
     }
 
-    @PostMapping
-    public Prestamo crearPrestamo(@RequestBody Prestamo prestamo) {
-        return prestamoService.guardarPrestamo(prestamo);
-    }
-
     @DeleteMapping("/{id}")
     public void eliminarPrestamo(@PathVariable Long id) {
         prestamoService.eliminarPrestamo(id);
     }
+
+    @GetMapping("/morosos")
+    public List<Usuario> listarMorosos() {
+        return prestamoService.listarUsuariosMorosos();
+    }
+
+    @PostMapping
+    public ResponseEntity<?> crearPrestamo(@RequestBody Prestamo prestamo) {
+        try {
+            Prestamo nuevo = prestamoService.guardarPrestamo(prestamo);
+            return ResponseEntity.ok(nuevo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
+
