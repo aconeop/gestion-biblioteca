@@ -3,11 +3,11 @@ package com.biblioteca.gestion_biblioteca.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "libros") // nombre de la tabla en la base de datos
+@Table(name = "libros")
 public class Libro {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // autoincremental
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -16,11 +16,13 @@ public class Libro {
     @Column(nullable = false)
     private String autor;
 
-    @Column(name = "anio_publicacion")
+    @Column(name = "anio_publicacion", nullable = false)
     private int anioPublicacion;
 
+    @Column(nullable = false)
     private String categoria;
 
+    @Column(nullable = false)
     private String estado; // disponible, prestado, reservado, deteriorado
 
     // 🔹 Constructor vacío (obligatorio para JPA)
@@ -28,29 +30,58 @@ public class Libro {
 
     // 🔹 Constructor con parámetros
     public Libro(String titulo, String autor, int anioPublicacion, String categoria, String estado) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.anioPublicacion = anioPublicacion;
-        this.categoria = categoria;
-        this.estado = estado;
+        setTitulo(titulo);
+        setAutor(autor);
+        setAnioPublicacion(anioPublicacion);
+        setCategoria(categoria);
+        setEstado(estado);
     }
 
-    // 🔹 Getters y Setters
+    // ===== Getters y Setters con validaciones =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public void setTitulo(String titulo) {
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new IllegalArgumentException("El título no puede estar vacío");
+        }
+        this.titulo = titulo;
+    }
 
     public String getAutor() { return autor; }
-    public void setAutor(String autor) { this.autor = autor; }
+    public void setAutor(String autor) {
+        if (autor == null || autor.trim().isEmpty()) {
+            throw new IllegalArgumentException("El autor no puede estar vacío");
+        }
+        this.autor = autor;
+    }
 
     public int getAnioPublicacion() { return anioPublicacion; }
-    public void setAnioPublicacion(int anioPublicacion) { this.anioPublicacion = anioPublicacion; }
+    public void setAnioPublicacion(int anioPublicacion) {
+        if (anioPublicacion <= 0) {
+            throw new IllegalArgumentException("El año de publicación debe ser mayor que 0");
+        }
+        this.anioPublicacion = anioPublicacion;
+    }
 
     public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public void setCategoria(String categoria) {
+        if (categoria == null || categoria.trim().isEmpty()) {
+            throw new IllegalArgumentException("La categoría no puede estar vacía");
+        }
+        this.categoria = categoria;
+    }
 
     public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setEstado(String estado) {
+        if (estado == null ||
+                !(estado.equalsIgnoreCase("disponible") ||
+                        estado.equalsIgnoreCase("prestado") ||
+                        estado.equalsIgnoreCase("reservado") ||
+                        estado.equalsIgnoreCase("deteriorado"))) {
+            throw new IllegalArgumentException("El estado debe ser disponible, prestado, reservado o deteriorado");
+        }
+        this.estado = estado.toLowerCase();
+    }
 }
