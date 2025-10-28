@@ -62,3 +62,8 @@ INSERT INTO prestamos (usuario_id, libro_id, fecha_prestamo, fecha_devolucion, e
 (8, 28, '2025-09-08', '2025-09-23', 'prestado'),
 (9, 29, '2025-09-01', '2025-09-10', 'atrasado'),
 (10, 30, '2025-09-20', '2025-10-05', 'prestado');
+
+
+ALTER TABLE usuarios ALTER COLUMN id RESTART WITH 21;
+ALTER TABLE libros ALTER COLUMN id RESTART WITH 41;
+ALTER TABLE prestamos ALTER COLUMN id RESTART WITH 11;
