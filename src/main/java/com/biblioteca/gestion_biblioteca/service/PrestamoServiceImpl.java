@@ -44,19 +44,14 @@ public class PrestamoServiceImpl implements PrestamoService {
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
         // Validaciones de negocio
-        // 1) no más de 5 préstamos activos
-        long activos = prestamoRepository.findAll().stream()
-                .filter(p -> p.getUsuario().getId().equals(usuario.getId()))
-                .filter(p -> "activo".equalsIgnoreCase(p.getEstado()))
-                .count();
+        // 1) no más de 5 préstamos activos (Consulta directa a BD)
+        long activos = prestamoRepository.countByUsuarioIdAndEstado(usuario.getId(), "activo");
         if (activos >= 5) {
             throw new RuntimeException("El usuario ya tiene 5 préstamos activos.");
         }
 
-        // 2) si tiene atrasados, no puede pedir otro
-        boolean tieneAtrasado = prestamoRepository.findAll().stream()
-                .filter(p -> p.getUsuario().getId().equals(usuario.getId()))
-                .anyMatch(p -> "atrasado".equalsIgnoreCase(p.getEstado()));
+        // 2) si tiene atrasados, no puede pedir otro (Consulta directa a BD)
+        boolean tieneAtrasado = prestamoRepository.existsByUsuarioIdAndEstado(usuario.getId(), "atrasado");
         if (tieneAtrasado) {
             throw new RuntimeException("El usuario tiene préstamos atrasados, no puede pedir más.");
         }
@@ -80,10 +75,11 @@ public class PrestamoServiceImpl implements PrestamoService {
 
     @Override
     public List<UsuarioDto> listarUsuariosMorosos() {
-        return prestamoRepository.findAll().stream()
-                .filter(p -> "atrasado".equalsIgnoreCase(p.getEstado()))
-                .map(Prestamo::getUsuario)
-                .distinct()
+        //  consulta optimizada que trae solo los usuarios únicos
+        List<Usuario> morosos = prestamoRepository.findDistinctUsuariosByEstado("atrasado");
+
+        //  mapear la lista de Usuario a UsuarioDto
+        return morosos.stream()
                 .map(u -> new UsuarioDto(u.getId(), u.getNombre(),
                         u.getCorreo(), u.getTipo(), u.getEstado()))
                 .toList();
