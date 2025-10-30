@@ -46,9 +46,9 @@ cd gestion-biblioteca/gestion-biblioteca
 ________________________________________
 2. Ejecutar con Gradle (terminal)
    
-./gradlew bootRun
+./gradlew clean bootRun --args="--spring.profiles.active=dev"
 La aplicación quedará disponible en:
-👉 http://localhost:8080/
+👉 http://localhost:8085/swagger-ui/index.html?
 ________________________________________
 3. Ejecutar con IntelliJ IDEA
    
@@ -61,7 +61,7 @@ o	Si no lo hace, asegúrate de que en la barra lateral derecha esté activado el
 6.	Haz clic derecho sobre el archivo y selecciona Run 'GestionBibliotecaApplication.main()'
 7.	IntelliJ compilará y levantará la aplicación.
 La aplicación quedará corriendo en:
-👉 http://localhost:8080/
+👉 http://localhost:8085/swagger-ui/index.html?
 ________________________________________
 
 🛠️ Endpoints principales
