@@ -1,6 +1,10 @@
 package com.biblioteca.gestion_biblioteca.model;
 
 import jakarta.persistence.*;
+import java.util.List; // Importación necesaria
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "usuarios")
@@ -14,6 +18,10 @@ public class Usuario {
     private String correo;
     private String tipo;   // estudiante, docente, empleado
     private String estado; // activo, moroso, vetado
+
+    // 🔹 CORRECCIÓN: Relación bidireccional con Prestamo para mapeo completo (mappedBy="usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Prestamo> prestamos;
 
     public Usuario() {}
 
@@ -63,4 +71,8 @@ public class Usuario {
         }
         this.estado = estado;
     }
+
+    // 🔹 GETTER/SETTER AGREGADO para la relación
+    public List<Prestamo> getPrestamos() { return prestamos; }
+    public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
 }
