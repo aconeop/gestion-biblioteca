@@ -1,12 +1,12 @@
 package com.biblioteca.gestion_biblioteca.repository;
 
 import com.biblioteca.gestion_biblioteca.model.Prestamo;
-import com.biblioteca.gestion_biblioteca.model.Usuario; // <-- IMPORTE NUEVO
+import com.biblioteca.gestion_biblioteca.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query; // <-- IMPORTE NUEVO
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List; // <-- IMPORTE NUEVO
+import java.util.List;
 
 @Repository
 public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
